@@ -14,13 +14,15 @@ Welcome to the wide world of SQL.
 -------------
 
 * CREATE TABLE
+* DROP TABLE
+* CRUD operations: insert, select, update, delete
 * INSERT 
-* SELECT
+* SELECT *
 * UPDATE
 * DELETE
-* DROP TABLE
 * SELECT … WHERE
 * SELECT … ORDER BY
+* Batching operations
 
 2. Relational Algebra
 ---------------------
@@ -44,6 +46,7 @@ Welcome to the wide world of SQL.
 * BEGIN
 * COMMIT
 * ROLLBACK
+* CREATE TEMPORARY TABLE
 
 5. Aggregation
 --------------
