@@ -10,14 +10,17 @@ line_re = re.compile(r'''
     (?P<is_televsion>")?(?P<movie_title>[^"]+)"?
     \ +\((?P<year>[\d?]+)(?P<nth_movie_that_year>/[IVX]+)?\)
     (\ +\{(?P<episode>[^}]+)\})?
-    (\ +(
-        \((?P<as>as\ [^)]+( \([IV]+\))?)\)
+    (\ *(
+        \((?P<as>as\ [^)]+( \([IV]+\))?)\)\)?
       | \((?P<also_as>also\ as\ [^)]+)\)
       | \((?P<attached>attached)\)
       | \((?P<archive_footage>.*archive\ footage[^)]*)\)
-      | \((?P<archive_sound>.*archive\ sound)\)
-      | \((?P<credit_only>credit\ only)\)
-      | (?P<hunter_number_2>Hunter \#2)
+      | \((?P<archive_sound>.*archive\ sound[^)]*)\)
+      | (?P<bare_number>7|30)
+      | (?P<compound_guard_number_3>Compound\ Guard\ \#3)
+      | \((?P<credit_only>credit\ only[^)]*)\)
+      | \((?P<from>from [^)]*)\)
+      | (?P<hunter_number_2>Hunter\ \#2)
       | \((?P<in_talks>in\ talks)\)
       | \((?P<episode_details>(\d+\ )?episode[^)]*)\)
       | \((?P<made_for_video>V)\)
@@ -25,27 +28,23 @@ line_re = re.compile(r'''
       | \((?P<scenes_deleted>scenes\ deleted)\)
       | \((?P<segment>segment [^)]*)\)
       | \((?P<singing_voice>singing\ voice[^)]*)\)
-      | \((?P<song>song: [^)]+)\)
-      | \((?P<songs>songs)\)
+      | \((?P<song>song:? [^)]+)\)
+      | \((?P<songs>songs?)\)
       | \{\{(?P<suspended>SUSPENDED)\}\}
       | \((?P<television>TV)\)
       | \((?P<unconfirmed>unconfirmed)\)
-      | \((?P<uncredited>uncredited)\)\ ?\)?
+      | \((?P<uncredited>uncredited[^)]*)\)\ ?\)?
       | \((?P<videogame>VG)\)
-      | \((?P<voice>voice[^)]*)\)
+      | \(?(?P<voice>voice[^)]*)\)
+      | \(?(?P<voice2>;\ \(voice\))\)
       | \((?P<year_scenes>\d\d\d\d\ scenes)\)
-      | \((?P<years>\d\d\d\d\ ?-?\ ?\d?\d?\d?\d?)\)
+      | \((?P<years>\d\d\d\d\ ?-?\ ?[?\d]?[?\d]?[?\d]?[?\d]?)\)
       | Chris
     ))*
     (\ +\[(?P<role>.+?)\] )?
     (\ +<(?P<rank>\d+)>)?
     \n$
     ''', re.X)
-    # \ +
-    # (?P<tv>\ \(TV\))?
-    # (\ +\[(?P<role>[^]]+)\])?
-    # \n
-    # ''', re.X)
 
 def import_actors(db, filename):
     lines = iter(gzip.open(filename))
