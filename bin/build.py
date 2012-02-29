@@ -46,60 +46,92 @@ line_re = re.compile(r'''
     \n$
     ''', re.X)
 
-def import_actors(db, filename):
+def import_actors(db, filename, gender):
+
     lines = iter(gzip.open(filename))
+
     while not next(lines).startswith('Name'):
         continue
+
     next(lines)   # skip the title underlines
+
     for line in lines:
+
         if line.startswith('-----------------------'):
             break
         if line == '\n':
             continue
         line = line.decode('latin-1')
-        print repr(line)
-        print line_re.match(line).groupdict()
-        continue
-        maybe_actor, title = line.split('\t', 1)
-        if maybe_actor:
-            actor = maybe_actor
-        role_bracket_index = title.find('[')
-        if role_bracket_index == -1:
-            continue  # ignore rows that do not name the role
-        close_bracket_index = title.find(']')
-        role = title[role_bracket_index + 1 : close_bracket_index]
-        title = title[:role_bracket_index]
-        as_index = title.find('(as ')
-        if as_index != -1:
-            title = title[:as_index]   # chop off '(as Beege Barkett)'
-        title = title.strip()
-        if '{' in title:  # TV episode
+
+        m = line_re.match(line)
+        if m is None:
+            print 'Could not parse %r' % line
             continue
-        db.execute('INSERT INTO actor_title_role VALUES'
-                   ' (?, ?, ?)', (actor, title, role))
+
+        g = m.groupdict()
+
+        if 'actor_name' in g:
+            actor = g['actor_name']
+
+        if (g['archive_footage']
+            or g['archive_sound']
+            or g['credit_only']
+            or g['episode']
+            or g['in_talks']
+            or g['is_televsion']
+            or g['rumored']
+            or g['scenes_deleted']
+            or g['song']
+            or g['songs']
+            or g['suspended']
+            or g['television']
+            or g['unconfirmed']
+            or g['uncredited']
+            or g['videogame']
+            ):
+            continue
+
+        db.execute('INSERT INTO actor_title_role VALUES (?, ?, ?, ?, ?, ?)',
+                   (actor, gender, g['movie_title'], g['year'],
+                    g['made_for_video'], g['role']))
+
     db.commit()
 
 if __name__ == '__main__':
-#     db = sqlite3.connect('movie.db')
-#     db.execute('''
-# CREATE TABLE actor_title_role (actor TEXT, title TEXT, role TEXT);
-# ''')
-    db = None
-    import_actors(db, 'actors.list.gz')
-    import_actors(db, 'actresses.list.gz')
-    
+    db = sqlite3.connect('movie.db')
+    db.execute('''
+CREATE TABLE actor_title_role (
+    actor TEXT, gender TEXT,
+    title TEXT, year INTEGER, for_video BOOLEAN,
+    role TEXT
+);
+''')
+    import_actors(db, 'cache/actors.list.gz', 'm')
+    import_actors(db, 'cache/actresses.list.gz', 'f')
+
     for cmd in '''
 
-CREATE TABLE movie (id INTEGER PRIMARY KEY, title TEXT UNIQUE);
-CREATE TABLE actor (id INTEGER PRIMARY KEY, name TEXT UNIQUE);
-CREATE TABLE role (movie_id INTEGER, actor_id INTEGER, role TEXT);
+CREATE TABLE movie (
+  id INTEGER PRIMARY KEY, title TEXT UNIQUE, year INTEGER, for_video BOOLEAN
+  );
+CREATE TABLE actor (
+  id INTEGER PRIMARY KEY, name TEXT UNIQUE, gender TEXT
+  );
+CREATE TABLE role (
+  movie_id INTEGER, actor_id INTEGER, role TEXT
+  );
 
-INSERT INTO movie (title) SELECT DISTINCT title FROM actor_title_role;
-INSERT INTO actor (name) SELECT DISTINCT actor FROM actor_title_role;
+INSERT INTO movie (title, year, for_video)
+  SELECT DISTINCT title, year, for_video
+    FROM actor_title_role;
+
+INSERT INTO actor (name, gender)
+  SELECT DISTINCT actor, gender
+    FROM actor_title_role;
 
 INSERT INTO role (movie_id, actor_id, role)
   SELECT movie.id, actor.id, role FROM actor_title_role
-   JOIN movie USING (title)
+   JOIN movie USING (title, year)
    JOIN actor ON (actor.name = actor_title_role.actor);
 
 '''.split(';'):
