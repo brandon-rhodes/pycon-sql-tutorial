@@ -1,7 +1,7 @@
 
-========================
- SQL Tutorial Exercises
-========================
+=====================================
+ First Steps: SQL Tutorial Exercises
+=====================================
 
 :PyCon: 2012
 :Place: Santa Clara, California
@@ -120,38 +120,59 @@ c. Produce a list of role names, with each name appearing only once,
 .. Introduce GROUP BY and show how it can produce multiple rows, all of
    which have a COUNT(*) summary.  Also show SUM().
 
-a. Write a single query 
+a. Write a single query that shows how many men, and how many women,
+   have ever had roles in film.
 
-average length of film name in different decades?
+.. SELECT gender, count(*) FROM actor GROUP BY 1;
 
-most common movie name
+b. What was the average length of a film's name in 1905?  …in 1990?
 
-c. What is the maximum number of movies to share a single name?
+.. SELECT sum(length(title)) / count(*) FROM movie WHERE year = 1990;
 
-d. Following up on (3b): In how many years has there been at least one
-   movie released?
+c. What is the most common movie name ever?
 
-e. Which character name is the most common out of all of the roles ever
-   played in a movie?
+.. SELECT count(*), title FROM movie GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
+
+d. … character name ever?
    
+.. SELECT count(*), role FROM role GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
 
-4. Joining up
+5. Joining up
 -------------
 
 .. Show how JOIN lets you create an N×M table that combines two real
    tables, but how a WHERE clause can reduce the N×M to an interesting
-   set of rows.  Note that field names can (and sometimes must) now be
-   qualified with their table name.
+   set of rows.  Note that field names can (and, in real life, sometimes
+   must) now be qualified with their table name.
 
 a. Which movies have featured a character named “King Arthur”?
 
+.. SELECT * FROM movie JOIN role ON (movie.id = movie_id)
+   WHERE role = 'King Arthur';
+
 b. Which actors have played a character named “King Arthur”?
 
-c. 
+.. SELECT * FROM actor JOIN role ON (actor.id = actor_id)
+   WHERE role = 'King Arthur';
 
-d. 
+c. Which movie had the largest cast ever?
 
-e. 
+.. SELECT COUNT(*), title
+   FROM movie JOIN role ON (movie.id = movie_id)
+   GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
+
+d. Which 12 actors hold the record for being credited in the most
+   movies?
+
+.. SELECT COUNT(*), name
+   FROM actor JOIN role ON (actor.id = actor_id)
+   GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
+
+e. Which actors have most often reprised the same role, bringing it back
+   in movie after movie?
+
+.. SELECT count(*), name, role FROM actor JOIN role ON (actor.id = actor_id)
+   GROUP BY 2, 3 ORDER BY 1 DESC LIMIT 10;
 
 5. what
 -------
@@ -171,240 +192,54 @@ Using a single query: What is one of the least common last names in Hollywood?
 
 How many movies share their name with at least one other movie?
 
-a. 
 
-b. 
 
-c. 
+.. 1. The Basics
+.. -------------
 
-d. 
+.. * CREATE TABLE
+.. * DROP TABLE
+.. * CRUD operations: insert, select, update, delete
+.. * INSERT 
+.. * UPDATE
+.. * DELETE
+.. * Batching operations
 
-e. 
+.. 2. Relational Algebra
+.. ---------------------
 
-6. what
--------
+.. * FOREIGN KEY
+.. * PRIMARY KEY
 
-a. 
+.. 3. Indexing
+.. -----------
 
-b. 
+.. * DB-API
+.. * CREATE INDEX
+.. * DROP INDEX
+.. * Speed of inserting with index vs creating index afterward
 
-c. 
+.. 4. Transactions
+.. ---------------
 
-d. 
+.. * Consistency models
+.. * BEGIN
+.. * COMMIT
+.. * ROLLBACK
+.. * CREATE TEMPORARY TABLE
 
-e. 
+.. 5. Aggregation
+.. --------------
 
-7. what
--------
+.. * HAVING
+.. * GROUP BY
+.. * OFFSET / LIMIT
+.. * SELECT DISTINCT is like GROUP BY but lacks ability to compute SUM() etc
 
-a. 
+.. 6. ORMs
+.. -------
 
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-8. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-9. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-a. x
-b. yu
-
-------------------------------------------------------------------------
-
-Second Half
-===========
-
-1. Getting our feet wet
------------------------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-2. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-3. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-4. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-5. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-6. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-7. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-8. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-9. what
--------
-
-a. 
-
-b. 
-
-c. 
-
-d. 
-
-e. 
-
-
-1. The Basics
--------------
-
-* CREATE TABLE
-* DROP TABLE
-* CRUD operations: insert, select, update, delete
-* INSERT 
-* UPDATE
-* DELETE
-* Batching operations
-
-2. Relational Algebra
----------------------
-
-* FOREIGN KEY
-* PRIMARY KEY
-
-3. Indexing
------------
-
-* DB-API
-* CREATE INDEX
-* DROP INDEX
-* Speed of inserting with index vs creating index afterward
-
-4. Transactions
----------------
-
-* Consistency models
-* BEGIN
-* COMMIT
-* ROLLBACK
-* CREATE TEMPORARY TABLE
-
-5. Aggregation
---------------
-
-* HAVING
-* GROUP BY
-* OFFSET / LIMIT
-* SELECT DISTINCT is like GROUP BY but lacks ability to compute SUM() etc
-
-6. ORMs
--------
-
-* Models
-* Relations
-* Lazy vs eager loading
-* Units of work
+.. * Models
+.. * Relations
+.. * Lazy vs eager loading
+.. * Units of work
