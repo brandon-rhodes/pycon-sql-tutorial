@@ -13,8 +13,8 @@
 
 ------------------------------------------------------------------------
 
-First Half
-==========
+Learning the SELECT statement
+=============================
 
 1. Getting our feet wet
 -----------------------
@@ -174,25 +174,78 @@ e. Which actors have most often reprised the same role, bringing it back
 .. SELECT count(*), name, role FROM actor JOIN role ON (actor.id = actor_id)
    GROUP BY 2, 3 ORDER BY 1 DESC LIMIT 10;
 
-5. what
--------
+6. What will you be having?
+---------------------------
 
-.. But full N×M JOINs are rarely useful
+.. Explain, finally, how HAVING filters rows after aggregation has taken
+.. place.  Show how an alias lets you name an aggregate column for
+.. easier use in the HAVING clause.
 
-In what year was the first movie made?
+a. Produce a list of actors who have played exactly 42 roles.
 
-Who were the actors in the movie 1972 movie “Sleuth”?
+b. Produce a list of actors who have been in exactly 42 films.
 
-In how many movies has the famous Michael Caine acted?
+c. In which years was the average length of a film title greater than 20
+   characters?
 
-Using a single query: Were more movies were released in
-1928, 1929, or 1930?
+Further topics
+--------------
 
-Using a single query: What is one of the least common last names in Hollywood?
+| Subqueries
+| Inserting and updating data
+| Transactions
 
-How many movies share their name with at least one other movie?
+| *Break*
+
+| Indexes and performance
+| The DB-API and batch operations
+| The SQLAlchemy ORM, and others
+
+Quick Reference
+===============
+
+::
+
+ Table                                       Result
+ -----                                       ------
+
+  row       x
+  row      row
+  row       x      
+  row       x       rows -> row      row
+  row      row                                row A
+  row  ->  row  ->  rows -> row  ->  row  ->  row B
+  row       x      
+  row      row
+  row      row      rows -> row      x
+  row       x
+
+          WHERE       GROUP BY      HAVING   ORDER BY
 
 
+The chart above is designed to help you remember
+the order in which the major operations of a SELECT take place.
+The “paging” restrictions LIMIT and ORDER BY occur last,
+after all of the steps above have already taken place.
+
+The SQL language supports several basic expressions.
+Several that you will be using in this tutorial are::
+
+ a + b, a - b, a * b, a / b, et cetera
+ a = b, a < b, a > b, a <> b
+ COUNT(), SUM()
+ LENGTH(string)
+ string [NOT] LIKE '%case insensitive pattern%'
+ string [NOT] GLOB 'Case sensitive pattern'
+ cond1 AND cond2
+ cond1 OR cond2
+
+The basic CRUD (create, read, update, delete) operations are::
+
+ INSERT
+ SELECT
+ UPDATE
+ DELETE
 
 .. 1. The Basics
 .. -------------
