@@ -122,7 +122,7 @@ CREATE TABLE role (
   );
 
 INSERT INTO movie (title, year, for_video)
-  SELECT DISTINCT title, year, for_video
+  SELECT DISTINCT title, year, for_video = 'V'
     FROM actor_title_role;
 
 INSERT INTO actor (name, gender)
