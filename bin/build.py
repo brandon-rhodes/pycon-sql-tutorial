@@ -112,10 +112,10 @@ CREATE TABLE actor_title_role (
     for cmd in '''
 
 CREATE TABLE movie (
-  id INTEGER PRIMARY KEY, title TEXT UNIQUE, year INTEGER, for_video BOOLEAN
+  id INTEGER PRIMARY KEY, title TEXT, year INTEGER, for_video BOOLEAN
   );
 CREATE TABLE actor (
-  id INTEGER PRIMARY KEY, name TEXT UNIQUE, gender TEXT
+  id INTEGER PRIMARY KEY, name TEXT, gender TEXT
   );
 CREATE TABLE role (
   movie_id INTEGER, actor_id INTEGER, role TEXT
@@ -132,11 +132,12 @@ INSERT INTO actor (name, gender)
 INSERT INTO role (movie_id, actor_id, role)
   SELECT movie.id, actor.id, role FROM actor_title_role
    JOIN movie USING (title, year)
-   JOIN actor ON (actor.name = actor_title_role.actor);
+   JOIN actor ON (actor.name = actor_title_role.actor AND
+                  actor.gender = actor_title_role.gender);
 
 '''.split(';'):
-        pass
-        # db.execute(cmd)
-        # db.commit()
+        db.execute(cmd)
+        db.commit()
 
 # CREATE INDEX role_unique ON role (role, movie_id, actor_id);
+# TODO: why is there a movie from year 7? Fix my RE.
