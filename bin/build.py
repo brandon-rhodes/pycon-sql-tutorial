@@ -8,7 +8,7 @@ line_re = re.compile(r'''
     (?P<actor_name>[^\t]+)?
     \t+
     (?P<is_televsion>")?(?P<movie_title>[^"]+)"?
-    \ +\((?P<year>[\d?]+)(?P<nth_movie_that_year>/[IVX]+)?\)
+    \ +\((?P<year>[\d?]+)(/(?P<nth_movie_that_year>[IVX]+))?\)
     (\ +\{(?P<episode>[^}]+)\})?
     (\ *(
         \((?P<as>as\ [^)]+( \([IV]+\))?)\)\)?
@@ -70,7 +70,7 @@ def import_actors(db, filename, gender):
 
         g = m.groupdict()
 
-        if 'actor_name' in g:
+        if g['actor_name']:
             actor = g['actor_name']
 
         if (g['archive_footage']
@@ -91,9 +91,13 @@ def import_actors(db, filename, gender):
             ):
             continue
 
-        db.execute('INSERT INTO actor_title_role VALUES (?, ?, ?, ?, ?, ?)',
-                   (actor, gender, g['movie_title'], g['year'],
-                    g['made_for_video'], g['role']))
+        nth = g['nth_movie_that_year'] or ''
+        made_for_video = bool(g['made_for_video'])
+
+        db.execute('INSERT INTO actor_title_role VALUES (?, ?, ?, ?, ?, ?, ?)',
+                   (actor, gender,
+                    g['movie_title'], g['year'], nth, made_for_video,
+                    g['role']))
 
     db.commit()
 
@@ -102,7 +106,7 @@ if __name__ == '__main__':
     db.execute('''
 CREATE TABLE actor_title_role (
     actor TEXT, gender TEXT,
-    title TEXT, year INTEGER, for_video BOOLEAN,
+    title TEXT, year INTEGER, nth TEXT, for_video BOOLEAN,
     role TEXT
 );
 ''')
@@ -112,7 +116,7 @@ CREATE TABLE actor_title_role (
     for cmd in '''
 
 CREATE TABLE movie (
-  id INTEGER PRIMARY KEY, title TEXT, year INTEGER, for_video BOOLEAN
+  id INTEGER PRIMARY KEY, title TEXT, year INTEGER, nth TEXT, for_video BOOLEAN
   );
 CREATE TABLE actor (
   id INTEGER PRIMARY KEY, name TEXT, gender TEXT
@@ -121,17 +125,22 @@ CREATE TABLE role (
   movie_id INTEGER, actor_id INTEGER, role TEXT
   );
 
-INSERT INTO movie (title, year, for_video)
-  SELECT DISTINCT title, year, for_video = 'V'
+INSERT INTO movie (title, year, nth, for_video)
+  SELECT DISTINCT title, year, nth, for_video
     FROM actor_title_role;
 
 INSERT INTO actor (name, gender)
   SELECT DISTINCT actor, gender
     FROM actor_title_role;
 
+CREATE INDEX tmp1 ON movie (title, year);
+CREATE INDEX tmp2 ON actor (name);
+
 INSERT INTO role (movie_id, actor_id, role)
   SELECT movie.id, actor.id, role FROM actor_title_role
-   JOIN movie USING (title, year)
+   JOIN movie ON (movie.title = actor_title_role.title AND
+                  movie.year = actor_title_role.year AND
+                  movie.nth = actor_title_role.nth)
    JOIN actor ON (actor.name = actor_title_role.actor AND
                   actor.gender = actor_title_role.gender);
 
