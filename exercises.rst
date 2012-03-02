@@ -4,8 +4,8 @@
 =====================================
 
 :PyCon: 2012
-:Place: Santa Clara, California
-:By: Brandon Rhodes
+:Where: Santa Clara, California
+:Who: Brandon Rhodes
 
 
 | *Assumption #1: You know Python*
@@ -41,7 +41,7 @@ c. How many movies ever have been released to theaters, and how many
 .. SELECT COUNT(*) FROM movie WHERE for_video = 0;
    SELECT COUNT(*) FROM movie WHERE for_video = 1;
 
-d. … what, specifically, about movies with “Yoga” in their title?
+d. … what about movies with “Yoga” in their title?
 
 .. SELECT COUNT(*) FROM movie WHERE title LIKE '%yoga%' AND for_video = 0;
    SELECT COUNT(*) FROM movie WHERE title LIKE '%yoga%' AND for_video = 1;
@@ -110,7 +110,7 @@ b. Which years in human history have seen at least one movie released?
 .. SELECT DISTINCT year FROM movie;
 
 c. Produce a list of role names, with each name appearing only once,
-   that start with the word “Bystander.”
+   which start with the word “Bystander.”
 
 .. SELECT DISTINCT role FROM role WHERE role LIKE 'bystander%';
 
@@ -134,7 +134,7 @@ c. What is the most common movie name ever?
 .. SELECT count(*), title FROM movie GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
 
 d. … character name ever?
-   
+
 .. SELECT count(*), role FROM role GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
 
 5. Joining up
@@ -210,22 +210,22 @@ Quick Reference
  -----                                       ------
 
   row       x
-  row      row
-  row       x      
-  row       x       rows -> row      row
-  row      row                                row A
-  row  ->  row  ->  rows -> row  ->  row  ->  row B
-  row       x      
-  row      row
-  row      row      rows -> row      x
+  row      row      row -> row      row  ->  row A
+  row       x
+  row       x
+  row      row      row -> row      row  ->  row B
+  row      row      row /
+  row       x
+  row      row      row \
+  row      row      row -> row       x
   row       x
 
-          WHERE       GROUP BY      HAVING   ORDER BY
+          WHERE      GROUP BY      HAVING   ORDER BY
 
 
 The chart above is designed to help you remember
 the order in which the major operations of a SELECT take place.
-The “paging” restrictions LIMIT and ORDER BY occur last,
+The “paging” restrictions LIMIT and OFFSET occur last,
 after all of the steps above have already taken place.
 
 The SQL language supports several basic expressions.
@@ -236,16 +236,17 @@ Several that you will be using in this tutorial are::
  COUNT(), SUM()
  LENGTH(string)
  string [NOT] LIKE '%case insensitive pattern%'
- string [NOT] GLOB 'Case sensitive pattern'
+ string [NOT] GLOB 'Case sensitive pattern*'
  cond1 AND cond2
  cond1 OR cond2
 
 The basic CRUD (create, read, update, delete) operations are::
 
- INSERT
- SELECT
- UPDATE
- DELETE
+ 1.  INSERT INTO table VALUES (a, b, ...);
+     INSERT INTO table SELECT ...;
+ 2.  SELECT expr, expr, ... FROM table JOIN table ... WHERE ...;
+ 3.  UPDATE table SET field = value, ... WHERE ...;
+ 4.  DELETE FROM table WHERE ...;
 
 .. 1. The Basics
 .. -------------
@@ -253,7 +254,7 @@ The basic CRUD (create, read, update, delete) operations are::
 .. * CREATE TABLE
 .. * DROP TABLE
 .. * CRUD operations: insert, select, update, delete
-.. * INSERT 
+.. * INSERT
 .. * UPDATE
 .. * DELETE
 .. * Batching operations
