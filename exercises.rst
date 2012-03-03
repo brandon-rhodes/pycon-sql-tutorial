@@ -127,7 +127,8 @@ a. Write a single query that shows how many men, and how many women,
 
 b. What was the average length of a film's name in 1905?  …in 1990?
 
-.. SELECT sum(length(title)) / count(*) FROM movie WHERE year = 1990;
+.. SELECT sum(length(title)) / count(*) FROM movie
+   WHERE year = 1990;
 
 c. What is the most common movie name ever?
 
@@ -157,7 +158,7 @@ b. Which actors have played a character named “King Arthur”?
 
 c. Which movie had the largest cast ever?
 
-.. SELECT COUNT(*), title
+.. SELECT COUNT(*), title, movie.id
    FROM movie JOIN role ON (movie.id = movie_id)
    GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
 
@@ -166,12 +167,15 @@ d. Which 12 actors hold the record for being credited in the most
 
 .. SELECT COUNT(*), name
    FROM actor JOIN role ON (actor.id = actor_id)
+   WHERE role <> ''
    GROUP BY 2 ORDER BY 1 DESC LIMIT 10;
 
 e. Which actors have most often reprised the same role, bringing it back
    in movie after movie?
 
-.. SELECT count(*), name, role FROM actor JOIN role ON (actor.id = actor_id)
+.. SELECT count(*), name, role FROM actor
+   JOIN role ON (actor.id = actor_id)
+   WHERE role <> ''
    GROUP BY 2, 3 ORDER BY 1 DESC LIMIT 10;
 
 6. What will you be having?
@@ -181,12 +185,29 @@ e. Which actors have most often reprised the same role, bringing it back
 .. place.  Show how an alias lets you name an aggregate column for
 .. easier use in the HAVING clause.
 
-a. Produce a list of actors who have played exactly 42 roles.
+a. Produce a list of actors who have played exactly 99 roles.
 
-b. Produce a list of actors who have been in exactly 42 films.
+.. SELECT COUNT(*) AS role_count, actor_id, name
+   FROM actor JOIN role ON (actor.id = actor_id)
+   WHERE role <> ''
+   GROUP BY 2, 3
+   HAVING role_count = 99;
+
+b. Produce a list of actors who have been in exactly 99 films.
+
+.. SELECT COUNT(DISTINCT movie_id) AS movie_count,
+     actor_id, name
+   FROM actor
+     JOIN role ON (actor.id = actor_id)
+   WHERE role <> ''
+   GROUP BY 2, 3
+   HAVING movie_count = 99;
 
 c. In which years was the average length of a film title greater than 20
    characters?
+
+.. SELECT year, AVG(LENGTH(title)) AS average
+   FROM movie GROUP BY 1 HAVING average > 20;
 
 Further topics
 --------------

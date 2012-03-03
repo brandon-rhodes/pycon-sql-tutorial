@@ -144,6 +144,10 @@ INSERT INTO role (movie_id, actor_id, role)
    JOIN actor ON (actor.name = actor_title_role.actor AND
                   actor.gender = actor_title_role.gender);
 
+DROP TABLE actor_title_role;
+DROP INDEX tmp1;
+DROP INDEX tmp2;
+
 '''.split(';'):
         db.execute(cmd)
         db.commit()
