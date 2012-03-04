@@ -110,9 +110,9 @@ if __name__ == '__main__':
     db = sqlite3.connect('movie.db')
     db.execute('''
 CREATE TABLE actor_title_role (
-    actor TEXT, gender TEXT,
+    actor_name TEXT, gender TEXT,
     title TEXT, year INTEGER, nth TEXT, for_video BOOLEAN,
-    role TEXT
+    role_name TEXT
 );
 ''')
     import_actors(db, 'cache/actors.list.gz', 'm')
@@ -127,7 +127,7 @@ CREATE TABLE actor (
   id INTEGER PRIMARY KEY, name TEXT, gender TEXT
   );
 CREATE TABLE role (
-  movie_id INTEGER, actor_id INTEGER, role TEXT
+  movie_id INTEGER, actor_id INTEGER, name TEXT
   );
 
 INSERT INTO movie (title, year, nth, for_video)
@@ -135,19 +135,24 @@ INSERT INTO movie (title, year, nth, for_video)
     FROM actor_title_role;
 
 INSERT INTO actor (name, gender)
-  SELECT DISTINCT actor, gender
+  SELECT DISTINCT actor_name, gender
     FROM actor_title_role;
 
 CREATE INDEX tmp1 ON movie (title, year);
 CREATE INDEX tmp2 ON actor (name);
 
-INSERT INTO role (movie_id, actor_id, role)
-  SELECT movie.id, actor.id, role FROM actor_title_role
-   JOIN movie ON (movie.title = actor_title_role.title AND
-                  movie.year = actor_title_role.year AND
-                  movie.nth = actor_title_role.nth)
-   JOIN actor ON (actor.name = actor_title_role.actor AND
-                  actor.gender = actor_title_role.gender);
+INSERT INTO role (movie_id, actor_id, name)
+  SELECT movie.id, actor.id, role_name
+    FROM actor_title_role
+    JOIN movie ON (
+      movie.title = actor_title_role.title AND
+      movie.year = actor_title_role.year AND
+      movie.nth = actor_title_role.nth
+    )
+    JOIN actor ON (
+      actor.name = actor_title_role.actor_name AND
+      actor.gender = actor_title_role.gender
+    );
 
 DROP TABLE actor_title_role;
 DROP INDEX tmp1;
