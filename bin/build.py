@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 import gzip
+import os
 import re
 import sqlite3
+import sys
 
 line_re = re.compile(r'''
     (?P<actor_name>[^\t]+)?
     \t+
-    (?P<is_televsion>")?(?P<movie_title>[^"]+)"?
-    \ +\((?P<year>[\d?]+)(/(?P<nth_movie_that_year>[IVX]+))?\)
+    (?P<is_televsion>")?(?P<movie_title>[^"]+?)"?
+    \ +\((?P<year>[\d?]{4})(/(?P<nth_movie_that_year>[IVX]+))?\)
     (\ +\{(?P<episode>[^}]+)\})?
     (\ *(
         \((?P<as>as\ [^)]+( \([IV]+\))?)\)\)?
@@ -21,7 +23,7 @@ line_re = re.compile(r'''
       | \((?P<credit_only>credit\ only[^)]*)\)
       | \((?P<from>from [^)]*)\)
       | (?P<hunter_number_2>Hunter\ \#2)
-      | \((?P<in_talks>in\ talks)\)
+      | \((?P<in_talks>in\ talks|in\ negotiations)\)
       | \((?P<episode_details>(\d+\ )?episode[^)]*)\)
       | \((?P<made_for_video>V)\)
       | \((?P<rumored>rumored)\)
@@ -102,6 +104,9 @@ def import_actors(db, filename, gender):
     db.commit()
 
 if __name__ == '__main__':
+    if os.path.exists('movie.db'):
+        print 'Error: database already exists'
+        sys.exit(1)
     db = sqlite3.connect('movie.db')
     db.execute('''
 CREATE TABLE actor_title_role (
@@ -147,6 +152,8 @@ INSERT INTO role (movie_id, actor_id, role)
 DROP TABLE actor_title_role;
 DROP INDEX tmp1;
 DROP INDEX tmp2;
+
+VACUUM;
 
 '''.split(';'):
         db.execute(cmd)
