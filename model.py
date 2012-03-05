@@ -49,12 +49,13 @@ class Role(Base):
     def __repr__(self):
         return '<role %r>' % (self.name)
 
-if __name__ == '__main__':
-    engine = create_engine('sqlite:///movie.db', echo=True)
+def make_session(echo=True):
+    engine = create_engine('sqlite:///movie.db', echo=echo)
     Session = sessionmaker(bind=engine)
+    return Session()
 
-    session = Session()
-
+if __name__ == '__main__':
+    session = make_session()
     for movie in session.query(Movie).filter_by(
         title='Hamlet'):
         print movie

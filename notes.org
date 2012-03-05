@@ -1,0 +1,20 @@
+
+
+* JOIN
+** LEFT OUTER JOIN and importance of where criteria go
+   select * from movie join role on (movie.id = movie_id)
+     where title = 'Happiness' 
+       and role.name like '%Himself%';
+   select * from movie left outer join role
+     on (movie.id = movie_id)
+     where title = 'Happiness'
+       and role.name like '%Himself%';
+   select * from movie left outer join role on
+     (movie.id = movie_id and role.name like '%Himself%')
+     where title = 'Happiness';
+* raw data structures : objects :: DB-API : ORM
+** ugly_and_not.py
+*** also print out role.actor.name and count queries
+        for role in session.query(Role).filter_by(
+            movie=movie).options(joinedload('actor')
+            ):
