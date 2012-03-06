@@ -1,6 +1,10 @@
 
 
 * JOIN
+** Movies <= 1899, with # of actors
+   Need LEFT OUTER JOIN
+** Query: movies <= 1899, with their most popular actor
+   Solution is to create a *subquery*
 ** LEFT OUTER JOIN and importance of where criteria go
    select * from movie join role on (movie.id = movie_id)
      where title = 'Happiness' 
