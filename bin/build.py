@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 
+POSTGRES=False or True
+
 import gzip
 import os
 import re
 import sqlite3
 import sys
+
+if POSTGRES:
+    import psycopg2
 
 line_re = re.compile(r'''
     (?P<actor_name>[^\t]+)?
@@ -48,7 +53,7 @@ line_re = re.compile(r'''
     \n$
     ''', re.X)
 
-def import_actors(db, filename, gender):
+def import_actors(committer, db, filename, gender):
 
     lines = iter(gzip.open(filename))
 
@@ -96,18 +101,28 @@ def import_actors(db, filename, gender):
         nth = g['nth_movie_that_year'] or ''
         made_for_video = bool(g['made_for_video'])
 
-        db.execute('INSERT INTO actor_title_role VALUES (?, ?, ?, ?, ?, ?, ?)',
+        if POSTGRES:
+            s = 'INSERT INTO actor_title_role VALUES (%s,%s,%s,%s,%s,%s,%s)'
+            if g['year'] == '????':
+                g['year'] = None
+        else:
+            s = 'INSERT INTO actor_title_role VALUES (?, ?, ?, ?, ?, ?, ?)'
+        db.execute(s,
                    (actor, gender,
                     g['movie_title'], g['year'], nth, made_for_video,
                     g['role']))
 
-    db.commit()
+    committer.commit()
 
 if __name__ == '__main__':
-    if os.path.exists('movie.db'):
-        print 'Error: database already exists'
-        sys.exit(1)
-    db = sqlite3.connect('movie.db')
+    if POSTGRES:
+        connection = psycopg2.connect('dbname=movie')
+        db = connection.cursor()
+    else:
+        if os.path.exists('movie.db'):
+            print 'Error: database already exists'
+            sys.exit(1)
+        connection = db = sqlite3.connect('movie.db')
     db.execute('''
 CREATE TABLE actor_title_role (
     actor_name TEXT, gender TEXT,
@@ -115,16 +130,16 @@ CREATE TABLE actor_title_role (
     role_name TEXT
 );
 ''')
-    import_actors(db, 'cache/actors.list.gz', 'm')
-    import_actors(db, 'cache/actresses.list.gz', 'f')
+    import_actors(connection, db, 'cache/actors.list.gz', 'm')
+    import_actors(connection, db, 'cache/actresses.list.gz', 'f')
 
     for cmd in '''
 
 CREATE TABLE movie (
-  id INTEGER PRIMARY KEY, title TEXT, year INTEGER, nth TEXT, for_video BOOLEAN
+  id SERIAL, title TEXT, year INTEGER, nth TEXT, for_video BOOLEAN
   );
 CREATE TABLE actor (
-  id INTEGER PRIMARY KEY, name TEXT, gender TEXT
+  id SERIAL, name TEXT, gender TEXT
   );
 CREATE TABLE role (
   movie_id INTEGER, actor_id INTEGER, name TEXT
@@ -162,7 +177,7 @@ VACUUM;
 
 '''.split(';'):
         db.execute(cmd)
-        db.commit()
+        connection.commit()
 
 # CREATE INDEX role_unique ON role (role, movie_id, actor_id);
 # TODO: why is there a movie from year 7? Fix my RE.
