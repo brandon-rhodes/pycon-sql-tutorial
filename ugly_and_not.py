@@ -1,38 +1,52 @@
+import sqlite3
+import sys
 from sqlalchemy.orm import joinedload, subqueryload
 from model import Movie, Role, Actor, make_session
 
-if __name__ == '__main__':
-    session = make_session(echo=True)
+if __name__ == '__main__' and sys.argv[-1] == 'ugly':
+
+    connection = sqlite3.connect('movie.db')
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
     title = 'Inception'
 
-    # Ugly
-
-    for mrow in session.execute(
-        "SELECT * FROM movie WHERE title = :t",
-        {'t': title}
-        ):
+    cursor.execute("SELECT * FROM movie WHERE title = :t",
+                   {'t': title})
+    for mrow in cursor.fetchall():
         print mrow['title'], 'was made in', mrow['year']
         print 'The characters were named:'
-        for rrow in session.execute(
+        cursor.execute(
             "SELECT * FROM role WHERE movie_id = :id",
-            {'id': mrow['id']}
-            ):
+            {'id': mrow['id']})
+        for rrow in cursor.fetchall():
             print rrow['name'], '/',
 
-    print
-    print '-' * 79
+if __name__ == '__main__' and sys.argv[-1] == 'pretty1':
 
-    # Pretty
+
+    session = make_session(echo=False)
+    title = 'Inception'
 
     for movie in session.query(Movie).filter_by(
         title=title
         ):
         print movie.title, 'was made in', movie.year
-        print 'The characters were named:'
-        # for role in movie.roles:
-        #     print role.name, '/',
+        print 'Cast:'
+        for role in movie.roles:
+            print '%r played %r' % (
+                role.actor.name, role.name)
+
+if __name__ == '__main__' and sys.argv[-1] == 'pretty2':
+
+    session = make_session(echo=False)
+    title = 'Inception'
+
+    for movie in session.query(Movie).filter_by(
+        title=title
+        ):
+        print movie.title, 'was made in', movie.year
         for role in session.query(Role).filter_by(
             movie=movie).options(joinedload('actor')
             ):
-            print role.name, '/', role.actor.name
-        print
+            print '%r played %r' % (
+                role.actor.name, role.name)
