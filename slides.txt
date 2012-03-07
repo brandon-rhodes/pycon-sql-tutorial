@@ -4,7 +4,8 @@
 
 
 
-               Sphinx for Python Developers
+            The Structured Query Language (SQL)
+                   for Python Developers
 
 
 
@@ -28,8 +29,7 @@
                   • SQLAlchemy package
                   • SQLAlchemy documentation
                   • SQLite3 documentation
-                  • dbapi.py script
-                  • alchemy.py script
+                  • model.py script
 
 
 
@@ -42,9 +42,10 @@
                         Principles
                         ——————————
 
-
-                     tools NOT slides
-                 exploring NOT explanation
+         • The use of real tools, not just slides
+         • Seeing me recover from mistakes
+         • Big picture, not stuff you can look up
+         • Ask questions!
 
 
 
@@ -95,15 +96,35 @@
       {name: "Andrew Wyke",
        actor: {name: "Laurence Olivier", born: 1907}
       },
-      {name: "Andrew Wyke",
-       actor: {name: "Laurence Olivier", born: 1907}
+      {name: "Milo Tindle",
+       actor: {name: "Michael Caine", born: 1933}
       }]}
 
  {title: "Sleuth",
   year: 1972,
-  roles: [{name: "Andrew Wyke", actor: 19832},
-          {name: "Andrew Wyke", actor: 5239}
+  roles: [{name: "Andrew Wyke", actor: 1145125},
+          {name: "Milo Tindle", actor: 221217}
   ]}
+
+
+                           Role
+             ┌────────┬────────┬─────────────┐
+             │movie_id│actor_id│     name    │
+             │    .   │    .   │      .      │
+             │  391853│ 1145125│ Andrew Wyke │
+             │    .   │    .   │      .      │
+             │  391853│  221217│ Milo Tindle │
+             │    .   │    .   │      .      │
+             └────────┴────────┴─────────────┘
+       Movie                    Actor
+  ┌──────┬──────┐    ┌───────┬──────────────────┬──────┐
+  │ id   │ name │    │   id  │       name       │gender│
+  │   .  │  .   │    │   .   │         .        │   .  │
+  │391853│Sleuth│    │ 221217│Caine, Michael (I)│   m  │
+  │   .  │  .   │    │   .   │         .        │   .  │
+  └──────┴──────┘    │1145125│Olivier, Laurence │   m  │
+                     │   .   │         .        │   .  │
+                     └───────┴──────────────────┴──────┘
 
 
 

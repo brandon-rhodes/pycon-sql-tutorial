@@ -1,4 +1,20 @@
 
+* Overview
+** Data modeling - see slides
+*** MongoDB: Roles and actors inline
+*** MongoDB: Roles with actor_ids inline
+*** SQL: Binary relation between movie and actor
+
+* Querying
+** Show them exploratory ".tables" ".schema"
+** Show them  "* LIMIT 3" with ".mode column" ".header on"
+** Go through exercises
+*** Have them do the exercises
+*** Review
+*** Talk about performance
+*** Because whole DB cannot be sorted, we need indexes; add them
+*** When ANALYZE comes up, DROP TABLE sqlite_stat1 or sqlite_stat3
+** Mention plural vs singular once they have seen examples
 
 * JOIN
 ** Movies <= 1899, with # of actors
@@ -16,9 +32,45 @@
    select * from movie left outer join role on
      (movie.id = movie_id and role.name like '%Himself%')
      where title = 'Happiness';
+* Subquery
+** List of actors and their most recent movie "<=2011"
+* Different conventions of how to name ids and fields
 * raw data structures : objects :: DB-API : ORM
-** ugly_and_not.py
-*** also print out role.actor.name and count queries
-        for role in session.query(Role).filter_by(
-            movie=movie).options(joinedload('actor')
-            ):
+
+* ugly_and_not.py
+** start by doing problem in pure SQL
+** compare multi-SELECT approach to JOIN, talk about difference
+
+* ugly_and_not.py ugly
+** add another level that prints out actor names
+** toggle echo=True and complain about number of queries
+** replace actor-name query with a JOIN
+** change to Dr. Strangelove and show that actor appears twice
+** adjust iterator over JOIN so it only prints actor name once
+
+* ugly_and_not.py pretty1
+** show the pretty syntax
+** toggle echo=True and complain about number of queries
+** admit that I try to misuse query() by naming the collection
+** move to pretty2 to show how it is really done
+
+* creating data
+** CREATE TABLE, DROP TABLE
+** INSERT, INSERT-SELECT, concatenated INSERTs for performance
+** UPDATE, DELETE
+
+* transactions
+** show how inserting a movie at one prompt is not shown in the other
+** but the prompt that created the movie can see it
+** auto-commit vs auto-begin
+** discuss append-only model; old rows are discarded not overwritten
+** consistency models: read-committed vs serializable
+** rebuild a table with BEGIN; DROP TABLE; CREATE TABLE; INSERT; COMMIT
+
+* temporary tables
+
+* thinking about performance
+** Gustavo Duarte
+** disk heads moving between index and table, requests queuing up
+** logging to a different device than your database
+
