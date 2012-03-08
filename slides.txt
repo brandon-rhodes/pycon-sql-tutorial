@@ -117,14 +117,26 @@
              │    .   │    .   │      .      │
              └────────┴────────┴─────────────┘
        Movie                    Actor
-  ┌──────┬──────┐    ┌───────┬──────────────────┬──────┐
-  │ id   │ name │    │   id  │       name       │gender│
-  │   .  │  .   │    │   .   │         .        │   .  │
-  │391853│Sleuth│    │ 221217│Caine, Michael (I)│   m  │
-  │   .  │  .   │    │   .   │         .        │   .  │
-  └──────┴──────┘    │1145125│Olivier, Laurence │   m  │
-                     │   .   │         .        │   .  │
-                     └───────┴──────────────────┴──────┘
+  ┌──────┬──────┬────┐ ┌───────┬──────────────────┬──────┐
+  │ id   │ name │year│ │   id  │       name       │gender│
+  │   .  │  .   │    │ │   .   │         .        │   .  │
+  │391853│Sleuth│1972│ │ 221217│Caine, Michael (I)│   m  │
+  │   .  │  .   │    │ │   .   │         .        │   .  │
+  └──────┴──────┴────┘ │1145125│Olivier, Laurence │   m  │
+                       │   .   │         .        │   .  │
+                       └───────┴──────────────────┴──────┘
+
+
+
+SELECT * FROM table;
+SELECT * FROM table LIMIT 3;
+SELECT * FROM table WHERE column = value;
+SELECT * FROM table WHERE column < value OR column > value;
+SELECT * FROM table WHERE column <> value;  -- does not eq
+SELECT * FROM table ORDER BY column ASC LIMIT 5;
+SELECT * FROM table ORDER BY length(column) DESC LIMIT 7;
+SELECT column, length(column) FROM table ...;
+SELECT DISTINCT gender FROM actor;
 
 
 
@@ -135,8 +147,8 @@
         ├┤    └┘     ↘ ├┤ ⎪               ↘  ┌┐
         ├┤           ↗ ├┤ ⎪┌┐             ↗  ├┤
         ├┤  → ┌┐     ↘ ├┤ ⎪└┘             ↘  └┘
-        ├┤    └┘       └┘ ⎭
-        ├┤  WHERE   GROUP BY    HAVING   ORDER BY
+        ├┤    └┘       └┘ ⎭                         LIMIT
+        ├┤  WHERE   GROUP BY    HAVING   ORDER BY   OFFSET
         ├┤
         ├┤  → ┌┐       ┌┐ ⎫
         ├┤    ├┤     ↗ ├┤ ⎪┌┐      ┌┐
@@ -152,7 +164,7 @@
   (movie.id = movie_id) JOIN actor ON (actor_id = actor.id)
   WHERE movie.year >= 1920 AND movie.year <= 1921 AND
   actor.name >= 'Smith' AND actor.name <= 'Smitha';
-  
+
   CREATE INDEX i1 ON movie (year);
   CREATE INDEX i2 ON actor (name);
 
