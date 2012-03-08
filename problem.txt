@@ -1,0 +1,4 @@
+sqlite> SELECT movie.title, movie.year, role.name, actor.name FROM movie
+JOIN role ON (movie.id = role.movie_id) JOIN actor ON (role.actor_id =
+actor.id) WHERE movie.title = 'Batman' AND role.name = 'Batman/Bruce
+Wayne';
