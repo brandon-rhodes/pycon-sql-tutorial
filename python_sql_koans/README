@@ -1,0 +1,33 @@
+================
+PYTHON SQL KOANS
+================
+
+Python SQL Koans is inspired by Python Koans (https://bitbucket.org/mcrute/python_koans) 
+which, in turn, was inspired by Edgecase's Ruby Koans (http://rubykoans.com/ )
+
+This in an interactive tutorial for learning to use SQL with Python.  It uses an sqlite3
+database for the example. Those with bitter experience know that Oracle, DB2, MySQL, 
+Postgres all have syntax idiosyncrazies [sic] but effort is made here for the SQL to be
+interchangeable.  
+
+Most tests are 'fixed' by filling the missing parts of assert functions. Eg:
+
+    self.assertEqual(__, 1+2)
+
+which can be fixed by replacing the __ part with the appropriate code:
+
+Downloading Python Koans
+------------------------
+
+Installing Python Koans
+-----------------------
+
+Getting Started
+---------------
+
+From a *nix terminal or windows command prompt go to the python_sql_koans\python_<b>VERSION</b> folder and run:
+
+    python contemplate_sql_koans.py
+
+
+ 
