@@ -7,9 +7,14 @@ class AboutGroupBy(Koan):
 
     def test_assert_truth(self) :
         """
-        We shall contemplate the truth about selects..
+        We shall contemplate the truth about group by statements..
         """
-        self.assertTrue(___)  #this should be true
+        self.assertTrue(True)  #this should be true
     
+    def test_make_a_group_by_statement(self) :
+        """
+        use group by to see the select results in a different order
+        """
+        pass
 
 

@@ -9,7 +9,7 @@ class AboutWhere(Koan):
         """
         We shall contemplate the truth about selects..
         """
-        self.assertTrue(___)  #this should be true
+        self.assertTrue(False)  #this should be true
     
 
 
