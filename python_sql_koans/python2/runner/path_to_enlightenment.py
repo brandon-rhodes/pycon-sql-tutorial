@@ -7,6 +7,17 @@ import unittest
 
 from koans.about_asserts import AboutAsserts
 from koans.about_select import AboutSelect
+from koans.about_where import AboutWhere
+from koans.about_groupby import AboutGroupBy
+from koans.about_having import AboutHaving
+from koans.about_orderby import AboutOrderBy
+from koans.about_select_sa import AboutSelectInSqlAlchemy
+from koans.about_where_sa import AboutWhereInSqlAlchemy
+from koans.about_groupby_sa import AboutGroupByInSqlAlchemy
+from koans.about_having_sa import AboutHavingInSqlAlchemy
+from koans.about_orderby_sa import AboutOrderByInSqlAlchemy
+
+
 #from koans.about_none import AboutNone
 #from koans.about_lists import AboutLists
 #from koans.about_list_assignments import AboutListAssignments
@@ -49,8 +60,16 @@ def koans():
     suite = unittest.TestSuite()
     loader.sortTestMethodsUsing = None
     suite.addTests(loader.loadTestsFromTestCase(AboutSelect))
-#    suite.addTests(loader.loadTestsFromTestCase(AboutAsserts))
-#    suite.addTests(loader.loadTestsFromTestCase(AboutNone))
+    suite.addTests(loader.loadTestsFromTestCase(AboutAsserts))
+    suite.addTests(loader.loadTestsFromTestCase(AboutWhere))
+    suite.addTests(loader.loadTestsFromTestCase(AboutHaving))
+    suite.addTests(loader.loadTestsFromTestCase(AboutOrderBy))
+    suite.addTests(loader.loadTestsFromTestCase(AboutGroupBy))
+    suite.addTests(loader.loadTestsFromTestCase(AboutSelectInSqlAlchemy))
+    suite.addTests(loader.loadTestsFromTestCase(AboutWhereInSqlAlchemy))
+    suite.addTests(loader.loadTestsFromTestCase(AboutHavingInSqlAlchemy))
+    suite.addTests(loader.loadTestsFromTestCase(AboutOrderByInSqlAlchemy))
+    suite.addTests(loader.loadTestsFromTestCase(AboutGroupByInSqlAlchemy))
 #    suite.addTests(loader.loadTestsFromTestCase(AboutLists))
 #    suite.addTests(loader.loadTestsFromTestCase(AboutListAssignments))
 #    suite.addTests(loader.loadTestsFromTestCase(AboutDictionaries))
