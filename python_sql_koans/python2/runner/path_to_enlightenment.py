@@ -5,7 +5,7 @@
 
 import unittest
 
-#from koans.about_asserts import AboutAsserts
+from koans.about_asserts import AboutAsserts
 from koans.about_select import AboutSelect
 from koans.about_where import AboutWhere
 from koans.about_groupby import AboutGroupBy
