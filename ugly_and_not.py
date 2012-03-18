@@ -14,10 +14,12 @@ if __name__ == '__main__':
         print mrow['title'], 'was made in', mrow['year']
         print 'The characters were named:'
         for rrow in session.execute(
-            "SELECT * FROM role WHERE movie_id = :id",
+            "SELECT role.name AS role_name, actor.name AS actor_name"
+            " FROM role JOIN actor ON (role.actor_id = actor.id)"
+            " WHERE movie_id = :id",
             {'id': mrow['id']}
             ):
-            print rrow['name'], '/',
+            print rrow[0], '/', rrow[1]
 
     print
     print '-' * 79
