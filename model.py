@@ -59,3 +59,5 @@ if __name__ == '__main__':
     for movie in session.query(Movie).filter_by(
         title='Hamlet'):
         print movie
+        for role in movie.roles:
+            print '   ', role
