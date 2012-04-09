@@ -1,0 +1,13 @@
+This folder contains all the lessons required for python_sql_koans.
+
+Each lesson is expressed as one file for modularity.
+A lesson should encompass a single idea, e.g.:
+-- using the select statement
+-- using the where statement
+-- using group by
+-- using having
+-- connecting to the database
+-- different patterns of expressing sql in python, e.g. using the .format command vs %s and ?,
+ways to do line continuation with opinionated preferences, e.g. +\, ('mytex' [cr] 't' )
+-- ?????
+
